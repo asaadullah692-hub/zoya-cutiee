@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy 21st Birthday Zoya! 🎉</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,800;1,500&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pastel: {
+                            pink: '#FFE4E8',
+                            rose: '#F472B6',
+                            deepRose: '#E11D48',
+                            gold: '#F59E0B',
+                            goldLight: '#FEF3C7',
+                            lavender: '#F3E8FF',
+                            mint: '#D1FAE5',
+                            cream: '#FFFBEB'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        handwriting: ['Caveat', 'cursive'],
+                        serif: ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Floating background hearts animation */
+        @keyframes floatHeart {
+            0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1.2) rotate(360deg); opacity: 0; }
+        }
+
+        .bg-heart {
+            position: fixed;
+            color: rgba(244, 114, 182, 0.25);
+            pointer-events: none;
+            z-index: 0;
+            animation: floatHeart 12s linear infinite;
+        }
+
+        /* Candle flame flicker */
+        @keyframes flicker {
+            0%, 100% { transform: scale(1) rotate(-1deg); filter: drop-shadow(0 0 10px #f59e0b); }
+            25% { transform: scale(1.15) rotate(2deg); filter: drop-shadow(0 0 14px #fbbf24); }
+            50% { transform: scale(0.9) rotate(-2deg); filter: drop-shadow(0 0 6px #f59e0b); }
+            75% { transform: scale(1.1) rotate(1deg); filter: drop-shadow(0 0 12px #f59e0b); }
+        }
+
+        .flame-active {
+            animation: flicker 0.5s infinite ease-in-out;
+            transform-origin: center bottom;
+        }
+
+        .flame-active.extinguished {
+            animation: none !important;
+            opacity: 0 !important;
+            transition: opacity 0.4s ease-out;
+        }
+
+        /* Rising smoke FX */
+        .smoke-puff {
+            position: absolute;
+            width: 10px;
+            height: 25px;
+            background: rgba(200, 200, 200, 0.7);
+            border-radius: 50%;
+            filter: blur(5px);
+            animation: riseAndFade 2.2s forwards ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes riseAndFade {
+            0% { opacity: 0.9; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-70px) scale(3.5); }
+        }
+
+        /* Glassmorphism card styling */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(244, 114, 182, 0.25);
+            box-shadow: 0 10px 30px -5px rgba(244, 114, 182, 0.15);
+        }
+
+        /* Floating Kisses & Love Particles Animation */
+        @keyframes floatKiss {
+            0% { transform: translateY(100vh) scale(0.6) rotate(-15deg); opacity: 0; }
+            20% { opacity: 0.95; }
+            80% { opacity: 0.95; }
+            100% { transform: translateY(-15vh) scale(1.3) rotate(20deg); opacity: 0; }
+        }
+
+        .bg-kiss {
+            position: absolute;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatKiss 8s linear infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(225, 29, 72, 0.4)); }
+            50% { transform: scale(1.03); filter: drop-shadow(0 0 30px rgba(244, 114, 182, 0.8)); }
+        }
+
+        .heart-pulse {
+            animation: pulseGlow 2.5s infinite ease-in-out;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFE4E8;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #F472B6;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-pastel-pink via-white to-pastel-lavender text-slate-800 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden relative selection:bg-rose-200 selection:text-rose-900">
+
+    <!-- Ambient Floating Particles Background -->
+    <div id="hearts-container" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
+
+    <!-- Hidden Bulk File Input for Photo Uploads -->
+    <input type="file" id="batch-photo-input" accept="image/*" multiple class="hidden" onchange="handleBatchPhotoUpload(event)">
+    <input type="file" id="single-photo-input" accept="image/*" class="hidden" onchange="handleSinglePhotoUpload(event)">
+
+    <!-- Header Bar -->
+    <header class="sticky top-0 z-40 glass-card px-4 py-3 sm:px-8 border-b border-pink-200/50">
+        <div class="max-w-5xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-2 cursor-pointer" onclick="navigateTo('page1')">
+                <span class="text-2xl animate-bounce">✨</span>
+                <span class="font-handwriting text-3xl font-bold bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 bg-clip-text text-transparent">Zoya's 21st ✨</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-4xl w-full mx-auto p-4 sm:p-6 md:p-8 flex items-center justify-center relative z-10">
+
+        <!-- PAGE 1: COUNTDOWN -->
+        <section id="page1" class="page-content w-full flex flex-col items-center justify-center text-center py-4">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-pink-100/80 border border-pink-300 text-rose-600 text-xs sm:text-sm font-bold mb-6 shadow-sm">
+                <span class="animate-pulse">💖</span> Countdown to October 9th!
+            </div>
+
+            <h1 class="font-serif text-4xl sm:text-6xl font-black text-slate-900 leading-tight mb-4 tracking-tight">
+                ⏳ Countdown to 21
+            </h1>
+            <p class="text-slate-600 max-w-xl text-base sm:text-lg mb-8">
+                Counting down to October 9th for my special person! 💖
+            </p>
+
+            <!-- Live Timer Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full max-w-2xl mb-10">
+                <div class="glass-card p-5 rounded-2xl flex flex-col items-center justify-center transform hover:scale-105 transition">
+                    <span id="cd-days" class="font-serif text-4xl sm:text-5xl font-black text-pink-600">00</span>
+                    <span class="text-xs font-bold uppercase tracking-widest text-slate-500 mt-2">Days</span>
+                </div>
+                <div class="glass-card p-5 rounded-2xl flex flex-col items-center justify-center transform hover:scale-105 transition">
+                    <span id="cd-hours" class="font-serif text-4xl sm:text-5xl font-black text-purple-600">00</span>
+                    <span class="text-xs font-bold uppercase tracking-widest text-slate-500 mt-2">Hours</span>
+                </div>
+                <div class="glass-card p-5 rounded-2xl flex flex-col items-center justify-center transform hover:scale-105 transition">
+                    <span id="cd-minutes" class="font-serif text-4xl sm:text-5xl font-black text-amber-500">00</span>
+                    <span class="text-xs font-bold uppercase tracking-widest text-slate-500 mt-2">Minutes</span>
+                </div>
+                <div class="glass-card p-5 rounded-2xl flex flex-col items-center justify-center transform hover:scale-105 transition">
+                    <span id="cd-seconds" class="font-serif text-4xl sm:text-5xl font-black text-rose-500">00</span>
+                    <span class="text-xs font-bold uppercase tracking-widest text-slate-500 mt-2">Seconds</span>
+                </div>
+            </div>
+
+            <!-- Fast-Forward Trigger -->
+            <div class="flex items-center justify-center mb-8">
+                <button onclick="triggerCountdownZero()" class="px-7 py-3 bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 hover:opacity-95 text-white rounded-full font-bold shadow-lg hover:scale-105 active:scale-95 transition flex items-center gap-2">
+                    <i class="fa-solid fa-bolt"></i> ⚡ Fast Forward to Zero!
+                </button>
+            </div>
+
+            <!-- Page Navigation -->
+            <div class="mt-4">
+                <button onclick="navigateTo('page2')" class="px-8 py-4 bg-slate-900 hover:bg-rose-600 text-white font-bold rounded-2xl shadow-xl transition-all duration-300 flex items-center gap-3 text-lg hover:scale-105">
+                    <span>Blow Birthday Candle 🎂</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- PAGE 2: BLOW THE CAKE -->
+        <section id="page2" class="page-content hidden w-full flex-col items-center justify-center text-center py-4">
+            <div class="text-center mb-4">
+                <h2 class="font-serif text-3xl sm:text-5xl font-bold text-slate-900">🎂 Blow The 21st Candle!</h2>
+                <p class="text-slate-600 text-sm sm:text-base mt-2">Tap the blow button or blow into your microphone!</p>
+            </div>
+
+            <!-- Multi-tier Birthday Cake Container -->
+            <div class="relative w-72 sm:w-80 h-72 my-4 flex flex-col items-center justify-end">
+                
+                <!-- Glowing Candles -->
+                <div class="relative flex justify-center items-end gap-4 z-20 mb-[-8px]">
+                    <!-- Candle 1 -->
+                    <div class="flex flex-col items-center relative">
+                        <div class="flame-active w-4 h-6 bg-gradient-to-t from-amber-500 via-orange-400 to-yellow-200 rounded-full shadow-lg"></div>
+                        <div class="w-3 h-14 bg-gradient-to-r from-pink-300 via-rose-400 to-pink-300 rounded-sm shadow-sm border-t border-rose-200"></div>
+                    </div>
+                    <!-- Candle 2 (Center 21 Candle) -->
+                    <div class="flex flex-col items-center relative bottom-2">
+                        <div class="flame-active w-4 h-7 bg-gradient-to-t from-amber-500 via-orange-400 to-yellow-200 rounded-full shadow-lg"></div>
+                        <div class="w-4 h-16 bg-gradient-to-r from-purple-300 via-purple-400 to-purple-300 rounded-sm shadow-sm border-t border-purple-200 flex items-center justify-center text-[10px] font-bold text-purple-900">21</div>
+                    </div>
+                    <!-- Candle 3 -->
+                    <div class="flex flex-col items-center relative">
+                        <div class="flame-active w-4 h-6 bg-gradient-to-t from-amber-500 via-orange-400 to-yellow-200 rounded-full shadow-lg"></div>
+                        <div class="w-3 h-14 bg-gradient-to-r from-amber-200 via-amber-300 to-amber-200 rounded-sm shadow-sm border-t border-amber-200"></div>
+                    </div>
+                </div>
+
+                <!-- Cake Top Layer -->
+                <div class="w-48 h-16 bg-gradient-to-r from-pink-300 via-rose-300 to-pink-300 rounded-t-2xl border-b-4 border-rose-400 shadow-md relative z-10 flex justify-around items-center px-4">
+                    <span class="w-3 h-3 rounded-full bg-white opacity-80"></span>
+                    <span class="w-3 h-3 rounded-full bg-white opacity-80"></span>
+                    <span class="w-3 h-3 rounded-full bg-white opacity-80"></span>
+                    <span class="w-3 h-3 rounded-full bg-white opacity-80"></span>
+                </div>
+
+                <!-- Cake Bottom Layer -->
+                <div class="w-64 h-24 bg-gradient-to-r from-purple-200 via-pink-200 to-purple-200 rounded-t-2xl border-b-8 border-purple-300 shadow-lg relative flex justify-around items-center px-6">
+                    <div class="w-full flex justify-between">
+                        <span class="text-xl">🍓</span>
+                        <span class="text-xl">✨</span>
+                        <span class="text-xl">🍓</span>
+                        <span class="text-xl">✨</span>
+                        <span class="text-xl">🍓</span>
+                    </div>
+                </div>
+
+                <!-- Cake Stand -->
+                <div class="w-72 h-4 bg-slate-200 rounded-full shadow-md border-b-2 border-slate-300"></div>
+                <div class="w-32 h-6 bg-slate-300 rounded-b-xl shadow-sm"></div>
+            </div>
+
+            <!-- Candle Action Controls -->
+            <div id="cake-controls" class="flex flex-wrap items-center justify-center gap-3 mt-4">
+                <button id="blow-btn" onclick="blowOutCandles()" class="px-8 py-4 bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 hover:opacity-95 text-white font-black text-lg rounded-2xl shadow-xl transition transform hover:scale-105 active:scale-95 flex items-center gap-2">
+                    <i class="fa-solid fa-wind"></i> 💨 Blow Out Candle
+                </button>
+
+                <button id="mic-btn" onclick="initMicDetection()" class="px-4 py-4 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm rounded-2xl border border-pink-200 shadow-md transition flex items-center gap-2">
+                    <i class="fa-solid fa-microphone text-rose-500"></i> <span id="mic-text">Use Microphone</span>
+                </button>
+            </div>
+
+            <div id="mic-status" class="text-xs text-slate-500 mt-2 h-4"></div>
+
+            <!-- Wish Granted Message Card -->
+            <div id="finale-banner" class="hidden mt-6 p-6 glass-card rounded-2xl border-2 border-amber-300 max-w-lg mx-auto transform transition-all duration-700 scale-90">
+                <h3 class="font-handwriting text-3xl font-bold text-amber-600 mb-2">🎉 Wish Granted! 🎉</h3>
+                <p class="text-slate-700 text-sm leading-relaxed mb-4">
+                    May your 21st year bring endless happiness, success in becoming a doctor, and all the love in the world. Happy Birthday Zoya! ❤️✨
+                </p>
+                <button onclick="navigateTo('page3')" class="px-7 py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2 mx-auto">
+                    <span>Read Main Message 💌</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- PAGE 3: MAIN MESSAGE LETTER -->
+        <section id="page3" class="page-content hidden w-full flex-col items-center justify-center text-center py-4">
+            <div class="text-center mb-6">
+                <h2 class="font-serif text-3xl sm:text-5xl font-bold text-slate-900">💌 A Special Message</h2>
+            </div>
+
+            <div class="w-full max-w-xl mx-auto my-2">
+                <div class="glass-card p-6 sm:p-8 rounded-3xl text-left border-2 border-pink-300 shadow-xl">
+                    <div class="flex justify-between items-center border-b border-pink-200 pb-3 mb-4">
+                        <span class="font-handwriting text-3xl text-rose-600 font-bold">Dearest Zoya,</span>
+                        <span class="text-xs bg-pink-100 text-rose-700 px-3 py-1 rounded-full font-bold">Always ✨</span>
+                    </div>
+                    
+                    <div class="space-y-4 font-sans text-slate-800 leading-relaxed text-base sm:text-lg">
+                        <p>
+                            Mera pyara sa bacha, more like a bitchass now😭😂.
+                        </p>
+                        <p>
+                            I love you boht sara balke sabse zyada.
+                        </p>
+                        <p>
+                            I hope you won't be angry seeing a notification from me again.
+                        </p>
+                    </div>
+
+                    <div class="pt-6 mt-6 border-t border-pink-200 flex flex-col items-end">
+                        <span class="font-handwriting text-3xl text-rose-600 font-bold">Always & Forever ❤️</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next Page CTA -->
+            <div class="mt-8">
+                <button onclick="navigateTo('page4')" class="px-7 py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl shadow-lg transition flex items-center gap-2">
+                    <span>Next: Our Story 📖</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- PAGE 4: OUR STORY TIMELINE -->
+        <section id="page4" class="page-content hidden w-full flex-col items-center justify-center text-center py-4">
+            <div class="text-center mb-8">
+                <h2 class="font-serif text-3xl sm:text-5xl font-bold text-slate-900">📖 Our Story</h2>
+            </div>
+
+            <!-- Timeline Container -->
+            <div class="w-full max-w-2xl relative border-l-2 border-pink-400 ml-4 sm:ml-8 space-y-6 text-left py-2">
+                
+                <!-- Chapter 1 -->
+                <div class="relative pl-6 sm:pl-8">
+                    <div class="absolute -left-[17px] top-1 w-8 h-8 rounded-full bg-pink-500 text-white flex items-center justify-center text-xs font-bold ring-4 ring-pink-100">
+                        💖
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl transition hover:shadow-md">
+                        <span class="text-xs font-bold text-amber-500 uppercase tracking-wide">Chapter 1: The Beginning</span>
+                        <p class="text-slate-800 text-base mt-2 leading-relaxed">
+                            A confession 😂 and see where we are now.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Chapter 2 -->
+                <div class="relative pl-6 sm:pl-8">
+                    <div class="absolute -left-[17px] top-1 w-8 h-8 rounded-full bg-purple-500 text-white flex items-center justify-center text-xs font-bold ring-4 ring-purple-100">
+                        💖
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl transition hover:shadow-md">
+                        <span class="text-xs font-bold text-amber-500 uppercase tracking-wide">Chapter 2: Bringing Me Back To Life</span>
+                        <p class="text-slate-800 text-base mt-2 leading-relaxed">
+                            I lived once again when I felt like I am no more alive inside. But nahh Zoya said "aese kese" and made me live my immature nature once again.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Chapter 3 -->
+                <div class="relative pl-6 sm:pl-8">
+                    <div class="absolute -left-[17px] top-1 w-8 h-8 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs font-bold ring-4 ring-amber-100">
+                        💖
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl transition hover:shadow-md">
+                        <span class="text-xs font-bold text-amber-500 uppercase tracking-wide">Chapter 3: My Favourite Routine</span>
+                        <p class="text-slate-800 text-base mt-2 leading-relaxed">
+                            The late night talks the video calls, coming back home to text first and then waiting for a call after a tiring day has been my fav thing to do with you. You gave me the best time of my life wallahi. I wish we could make some good memories.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Chapter 4 -->
+                <div class="relative pl-6 sm:pl-8">
+                    <div class="absolute -left-[17px] top-1 w-8 h-8 rounded-full bg-rose-500 text-white flex items-center justify-center text-xs font-bold ring-4 ring-rose-100">
+                        💖
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl transition hover:shadow-md">
+                        <span class="text-xs font-bold text-amber-500 uppercase tracking-wide">Chapter 4: Always & Forever</span>
+                        <p class="text-slate-800 text-base mt-2 leading-relaxed">
+                            But khair "I love you anyways ❤️
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Next Page CTA -->
+            <div class="mt-8">
+                <button onclick="navigateTo('page5')" class="px-7 py-3.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl shadow-lg transition flex items-center gap-2">
+                    <span>Next: Dreams ✨</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- PAGE 5: DREAMS & WISHES -->
+        <section id="page5" class="page-content hidden w-full flex-col items-center justify-center text-center py-4">
+            <div class="text-center mb-6">
+                <h2 class="font-serif text-3xl sm:text-5xl font-bold text-slate-900">✨ Dreams & Wishes</h2>
+            </div>
+
+            <!-- Bucket List Items -->
+            <div id="dream-list" class="w-full max-w-xl flex flex-col gap-3 text-left mb-8">
+                <div onclick="toggleDream(this)" class="dream-item glass-card p-4 rounded-xl flex items-start gap-3 cursor-pointer hover:bg-pink-50/50 transition">
+                    <div class="w-6 h-6 rounded-md border-2 border-pink-500 bg-pink-500 flex items-center justify-center text-white dream-check shrink-0 mt-0.5">
+                        <i class="fa-solid fa-check text-xs"></i>
+                    </div>
+                    <span class="text-slate-800 text-base font-medium">I just want to see you successful Zoya.</span>
+                </div>
+
+                <div onclick="toggleDream(this)" class="dream-item glass-card p-4 rounded-xl flex items-start gap-3 cursor-pointer hover:bg-pink-50/50 transition">
+                    <div class="w-6 h-6 rounded-md border-2 border-pink-500 bg-pink-500 flex items-center justify-center text-white dream-check shrink-0 mt-0.5">
+                        <i class="fa-solid fa-check text-xs"></i>
+                    </div>
+                    <span class="text-slate-800 text-base font-medium leading-relaxed">Just don't care if someone is there for you or not, people come people go and trust me this will only cost you happiness and friends but at last you will be happier than before.</span>
+                </div>
+
+                <div onclick="toggleDream(this)" class="dream-item glass-card p-4 rounded-xl flex items-start gap-3 cursor-pointer hover:bg-pink-50/50 transition">
+                    <div class="w-6 h-6 rounded-md border-2 border-pink-500 bg-pink-500 flex items-center justify-center text-white dream-check shrink-0 mt-0.5">
+                        <i class="fa-solid fa-check text-xs"></i>
+                    </div>
+                    <span class="text-slate-800 text-base font-medium leading-relaxed">Mera pyara bacha be a doctor jaldi jaldi meri ankhen theek krdena boht blurr hogyi hain hehe. Mwaahhh 🩺👓</span>
+                </div>
+            </div>
+
+            <!-- Next Page CTA -->
+            <div>
+                <button onclick="navigateTo('page6')" class="px-7 py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-lg transition flex items-center gap-2">
+                    <span>Next: Photo Memories 📸</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- PAGE 6: PHOTO COLLAGE GALLERY 1 -->
+        <section id="page6" class="page-content hidden w-full flex-col items-center justify-center text-center py-4">
+            <div class="text-center mb-4">
+                <h2 class="font-serif text-3xl sm:text-5xl font-bold text-slate-900">The best ones</h2>
+                <p class="text-xs text-slate-500 mt-1">Tap any photo to view full size, or upload all 8 photos below!</p>
+            </div>
+
+            <!-- Batch Photo Picker Button -->
+            <div class="mb-6">
+                <button onclick="triggerBatchUpload()" class="px-5 py-2.5 bg-pink-500 hover:bg-rose-600 text-white font-bold text-sm rounded-full shadow-md transition transform hover:scale-105 active:scale-95 flex items-center gap-2 mx-auto">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> 📸 Select / Upload All 8 Photos
+                </button>
+            </div>
+
+            <div class="w-full max-w-xl grid grid-cols-2 gap-4 mb-6">
+                <!-- Photo Card 1 -->
+                <div class="glass-card p-2 rounded-2xl flex items-center justify-center aspect-[3/4] shadow-md hover:scale-105 transition cursor-pointer overflow-hidden group relative" onclick="openPhotoModal('photo-slot-1')">
+                    <img id="photo-slot-1" src="WhatsApp Image 2026-10-07 at 12.03.39 AM (2).jpeg" alt="Zoya Photo 1" class="w-full h-full object-cover rounded-xl group-hover:brightness-105 transition" onerror="handleImgError(this, 'Zoya Photo 1')">
+                    <button onclick="event.stopPropagation(); triggerSingleUpload('photo-slot-1')" class="absolute top-3 right-3 bg-slate-900/60 hover:bg-rose-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs backdrop-blur-sm transition opacity-80 hover:opacity-100" title="Change Photo">
+                        <i class="fa-solid fa-camera"></i>
+                    </button>
+                </div>
+                <!-- Photo Card 2 -->
+                <div class="glass-card p-2 rounded-2xl flex items-center justify-center aspect-[3/4] shadow-md hover:scale-105 transition cursor-pointer overflow-hidden group relative" onclick="openPhotoModal('photo-slot-2')">
+                    <img id="photo-slot-2" src="WhatsApp Image 2026-10-07 at 12.03.39 AM.jpeg" alt="Zoya Photo 2" class="w-full h-full object-cover rounded-xl group-hover:brightness-105 transition" onerror="handleImgError(this, 'Zoya Photo 2')">
+                    <button onclick="event.stopPropagation(); triggerSingleUpload('photo-slot-2')" class="absolute top-3 right-3 bg-slate-900/60 hover:bg-rose-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs backdrop-blur-sm transition opacity-80 hover:opacity-100" title="Change Photo">
+                        <i class="fa-solid fa-camera"></i>
+                    </button>
+                </div>
+                <!-- Photo Card 3 -->
+                <div class="glass-card p-2 rounded-2xl flex items-center justify-center aspect-[3/4] shadow-md hover:scale-105 transition cursor-pointer overflow-hidden group relative" onclick="openPhotoModal('photo-slot-3')">
+                    <img id="photo-slot-3" src="WhatsApp Image 2026-10-07 at 12.03.40 AM (1).jpeg" alt="Zoya Photo 3" class="w-full h-full object-cover rounded-xl group-hover:brightness-105 transition" onerror="handleImgError(this, 'Zoya Photo 3')">
+                    <button onclick="event.stopPropagation(); triggerSingleUpload('photo-slot-3')" class="absolute top-3 right-3 bg-slate-900/60 hover:bg-rose-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs backdrop-blur-sm transition opacity-80 hover:opacity-100" title="Change Photo">
+                        <i class="fa-solid fa-camera"></i>
+                    </button>
+                </div>
+                <!-- Photo Card 4 -->
+                <div class="glass-card p-2 rounded-2xl flex items-center justify-center aspect-[3/4] shadow-md hover:scale-105 transition cursor-pointer overflow-hidden group relative" onclick="openPhotoModal('photo-slot-4')">
+                    <img id="photo-slot-4" src="WhatsApp Image 2026-10-07 at 12.03.40 AM.jpeg" alt="Zoya Photo 4" class="w-full h-full object-cover rounded-xl group-hover:brightness-105 transition" onerror="handleImgError(this, 'Zoya Photo 4')">
+                    <button onclick="event.stopPropagation(); triggerSingleUpload('photo-slot-4')" class="absolute top-3 right-3 bg-slate-900/60 hover:bg-rose-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs backdrop-blur-sm transition opacity-80 hover:opacity-100" title="Change Photo">
+                        <i class="fa-solid fa-camera"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Next Page CTA -->
+            <div>
+                <button onclick="navigateTo('page7')" class="px-7 py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl shadow-lg transition flex items-center gap-2">
+                    <span>Next: More Memories 📸</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- PAGE 7: PHOTO COLLAGE GALLERY 2 -->
+        <section id="page7" class="page-content hidden w-full flex-col items-center justify-center text-center py-4">
+            <div class="w-full max-w-xl grid grid-cols-2 gap-4 mb-8">
+                <!-- Photo Card 5 -->
+                <div class="glass-card p-2 rounded-2xl flex items-center justify-center aspect-[3/4] shadow-md hover:scale-105 transition cursor-pointer overflow-hidden group relative" onclick="openPhotoModal('photo-slot-5')">
+                    <img id="photo-slot-5" src="WhatsApp Image 2026-10-07 at 12.03.41 AM.jpeg" alt="Zoya Photo 5" class="w-full h-full object-cover rounded-xl group-hover:brightness-105 transition" onerror="handleImgError(this, 'Zoya Photo 5')">
+                    <button onclick="event.stopPropagation(); triggerSingleUpload('photo-slot-5')" class="absolute top-3 right-3 bg-slate-900/60 hover:bg-rose-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs backdrop-blur-sm transition opacity-80 hover:opacity-100" title="Change Photo">
+                        <i class="fa-solid fa-camera"></i>
+                    </button>
+                </div>
+                <!-- Photo Card 6 -->
+                <div class="glass-card p-2 rounded-2xl flex items-center justify-center aspect-[3/4] shadow-md hover:scale-105 transition cursor-pointer overflow-hidden group relative" onclick="openPhotoModal('photo-slot-6')">
+                    <img id="photo-slot-6" src="WhatsApp Image 2026-10-07 at 12.06.17 AM.jpeg" alt="Zoya Photo 6" class="w-full h-full object-cover rounded-xl group-hover:brightness-105 transition" onerror="handleImgError(this, 'Zoya Photo 6')">
+                    <button onclick="event.stopPropagation(); triggerSingleUpload('photo-slot-6')" class="absolute top-3 right-3 bg-slate-900/60 hover:bg-rose-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs backdrop-blur-sm transition opacity-80 hover:opacity-100" title="Change Photo">
+                        <i class="fa-solid fa-camera"></i>
+                    </button>
+                </div>
+                <!-- Photo Card 7 -->
+                <div class="glass-card p-2 rounded-2xl flex items-center justify-center aspect-[3/4] shadow-md hover:scale-105 transition cursor-pointer overflow-hidden group relative" onclick="openPhotoModal('photo-slot-7')">
+                    <img id="photo-slot-7" src="WhatsApp Image 2026-10-07 at 12.03.39 AM (1).jpeg" alt="Zoya Photo 7" class="w-full h-full object-cover rounded-xl group-hover:brightness-105 transition" onerror="handleImgError(this, 'Zoya Photo 7')">
+                    <button onclick="event.stopPropagation(); triggerSingleUpload('photo-slot-7')" class="absolute top-3 right-3 bg-slate-900/60 hover:bg-rose-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs backdrop-blur-sm transition opacity-80 hover:opacity-100" title="Change Photo">
+                        <i class="fa-solid fa-camera"></i>
+                    </button>
+                </div>
+                <!-- Photo Card 8 -->
+                <div class="glass-card p-2 rounded-2xl flex items-center justify-center aspect-[3/4] shadow-md hover:scale-105 transition cursor-pointer overflow-hidden group relative" onclick="openPhotoModal('photo-slot-8')">
+                    <img id="photo-slot-8" src="WhatsApp Image 2026-10-07 at 12.03.40 AM (2).jpeg" alt="Zoya Photo 8" class="w-full h-full object-cover rounded-xl group-hover:brightness-105 transition" onerror="handleImgError(this, 'Zoya Photo 8')">
+                    <button onclick="event.stopPropagation(); triggerSingleUpload('photo-slot-8')" class="absolute top-3 right-3 bg-slate-900/60 hover:bg-rose-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs backdrop-blur-sm transition opacity-80 hover:opacity-100" title="Change Photo">
+                        <i class="fa-solid fa-camera"></i>
+                    </button>
+                </div>
+            </div>
+
+            <p class="text-slate-700 text-sm font-medium mb-6">
+                Happy 21st Birthday once again! You are truly irreplaceable. 🌟
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <button onclick="navigateTo('page8')" class="px-7 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg transition flex items-center gap-2">
+                    <i class="fa-brands fa-spotify text-lg"></i>
+                    <span>Special Birthday Playlist 🎵</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <button onclick="navigateTo('page1')" class="px-6 py-3 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl shadow-md transition flex items-center gap-2">
+                    <i class="fa-solid fa-rotate-right"></i> Restart Countdown
+                </button>
+            </div>
+        </section>
+
+        <!-- PAGE 8: SPOTIFY PLAYLIST -->
+        <section id="page8" class="page-content hidden w-full flex-col items-center justify-center text-center py-4">
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-700 text-xs sm:text-sm font-bold mb-3 shadow-sm">
+                    <i class="fa-brands fa-spotify text-emerald-600 text-base"></i> Curated Just For You
+                </div>
+                <h2 class="font-serif text-3xl sm:text-5xl font-bold text-slate-900">🎵 Zoya's Birthday Playlist</h2>
+                <p class="text-slate-600 text-sm sm:text-base mt-2">A special collection of songs made just for you!</p>
+            </div>
+
+            <div class="w-full max-w-xl mx-auto my-2">
+                <div class="glass-card p-6 sm:p-8 rounded-3xl text-center border-2 border-emerald-300 shadow-xl bg-gradient-to-b from-emerald-50/60 to-white">
+                    
+                    <!-- Playlist Graphic Badge -->
+                    <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-4xl shadow-lg ring-4 ring-emerald-100">
+                        <i class="fa-brands fa-spotify"></i>
+                    </div>
+
+                    <h3 class="font-bold text-2xl text-slate-900 mb-1">Birthday Vibe Playlist 🎧</h3>
+                    <p class="text-slate-600 text-sm mb-6">Click below to open and listen on Spotify!</p>
+
+                    <!-- Embedded Spotify Player -->
+                    <div class="w-full mb-6 rounded-2xl overflow-hidden shadow-md border border-emerald-200">
+                        <iframe style="border-radius:16px" src="https://open.spotify.com/embed/playlist/3mfmOZpgWvsHxZQCdf2vKr?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                    </div>
+
+                    <!-- Direct Clickable Spotify Link Button -->
+                    <a href="https://open.spotify.com/playlist/3mfmOZpgWvsHxZQCdf2vKr?si=1d905b1118e5484f" target="_blank" rel="noopener noreferrer" class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-base rounded-2xl shadow-lg hover:shadow-xl transition transform hover:scale-[1.02] active:scale-95 inline-flex items-center justify-center gap-3">
+                        <i class="fa-brands fa-spotify text-2xl"></i>
+                        <span>Open Playlist on Spotify ↗</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Navigation to Final Page -->
+            <div class="mt-8">
+                <button onclick="navigateTo('page9')" class="px-8 py-4 bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 hover:opacity-95 text-white font-extrabold text-lg rounded-2xl shadow-xl transition transform hover:scale-105 active:scale-95 inline-flex items-center justify-center gap-3 mx-auto">
+                    <span>One Final Surprise 💋</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- PAGE 9: FOREVER FAVORITE PERSON -->
+        <section id="page9" class="page-content hidden w-full flex-col items-center justify-center text-center py-6 relative overflow-hidden min-h-[70vh]">
+            <!-- Floating Motion Hearts and Kisses Layer -->
+            <div id="love-particles-container" class="absolute inset-0 pointer-events-none z-0 overflow-hidden"></div>
+
+            <div class="relative z-10 w-full max-w-xl mx-auto my-auto px-2">
+                <div class="glass-card p-8 sm:p-12 rounded-3xl text-center border-4 border-rose-300 shadow-2xl bg-gradient-to-b from-pink-100/90 via-white to-rose-50/90 heart-pulse">
+                    
+                    <!-- Top Heart & Kiss Icon Row -->
+                    <div class="flex items-center justify-center gap-3 text-4xl sm:text-5xl mb-6">
+                        <span class="animate-bounce">💋</span>
+                        <span class="animate-pulse text-5xl sm:text-6xl text-rose-500">💖</span>
+                        <span class="animate-bounce" style="animation-delay: 0.3s">💋</span>
+                    </div>
+
+                    <!-- Main Love Heading -->
+                    <h2 class="font-handwriting text-4xl sm:text-6xl font-bold bg-gradient-to-r from-rose-600 via-pink-500 to-rose-700 bg-clip-text text-transparent leading-tight mb-6">
+                        I love you my forever favorite person ❤️
+                    </h2>
+
+                    <div class="flex justify-center items-center gap-2 text-2xl text-rose-400 mb-8">
+                        <span>✨</span>
+                        <span class="animate-pulse">💋</span>
+                        <span class="animate-ping text-xs text-rose-500">💖</span>
+                        <span class="animate-pulse">💋</span>
+                        <span>✨</span>
+                    </div>
+
+                    <!-- Interactive Controls -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4 border-t border-rose-200">
+                        <button onclick="triggerLoveBurst()" class="px-7 py-3.5 bg-gradient-to-r from-rose-500 to-pink-500 hover:opacity-95 text-white font-bold rounded-2xl shadow-lg transition transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 text-sm w-full sm:w-auto">
+                            <i class="fa-solid fa-heart-pulse"></i> Shower More Kisses & Hearts! 💋
+                        </button>
+                        <button onclick="navigateTo('page1')" class="px-6 py-3.5 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-2xl shadow-md transition text-sm flex items-center justify-center gap-2 w-full sm:w-auto">
+                            <i class="fa-solid fa-rotate-right"></i> Start Over
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- AGE 21 POPUP MODAL -->
+    <div id="age-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-500 p-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-10 max-w-md w-full text-center shadow-2xl border-4 border-pink-300 transform scale-90 transition-transform duration-500 relative overflow-hidden">
+            <div class="relative z-10">
+                <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-tr from-pink-500 to-amber-400 text-white flex items-center justify-center text-4xl font-black shadow-lg ring-8 ring-pink-100">
+                    21
+                </div>
+
+                <span class="px-3 py-1 bg-pink-100 text-rose-700 font-bold text-xs rounded-full uppercase tracking-widest">Official Milestone</span>
+                <h2 class="font-serif text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">HAPPY BIRTHDAY ZOYA! 👑</h2>
+                
+                <p class="text-slate-600 text-sm sm:text-base mt-3 leading-relaxed">
+                    Welcome to adulthood! Official 21st Milestone unlocked! 👑
+                </p>
+
+                <div class="mt-6">
+                    <button onclick="closeAgeModal()" class="w-full py-3.5 bg-gradient-to-r from-pink-500 to-rose-600 hover:opacity-90 text-white font-bold rounded-xl shadow-lg transition">
+                        Explore Your Wishes ❤️
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FULLSCREEN PHOTO PREVIEW MODAL -->
+    <div id="photo-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 backdrop-blur-lg opacity-0 pointer-events-none transition-opacity duration-300 p-4" onclick="closePhotoModal()">
+        <div class="relative max-w-lg w-full p-2 flex flex-col items-center justify-center" onclick="event.stopPropagation()">
+            <button onclick="closePhotoModal()" class="absolute -top-12 right-2 text-white bg-white/20 hover:bg-white/40 w-10 h-10 rounded-full flex items-center justify-center text-xl transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="modal-photo-img" src="" alt="Zoomed Photo" class="w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl border-2 border-pink-300/40">
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-slate-500 border-t border-pink-200/50 glass-card">
+        <p>Made with ❤️ for Zoya's 21st Birthday ✨</p>
+    </footer>
+
+    <script>
+        let countdownInterval = null;
+        let db = null;
+        let activeSingleSlotId = null;
+
+        // Initialize IndexedDB for permanent local photo storage
+        function initIndexedDB() {
+            const request = indexedDB.open('ZoyaBirthdayPhotosDB', 1);
+            request.onupgradeneeded = function(e) {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains('photos')) {
+                    db.createObjectStore('photos', { keyPath: 'slotId' });
+                }
+            };
+            request.onsuccess = function(e) {
+                db = e.target.result;
+                loadStoredPhotos();
+            };
+        }
+
+        function loadStoredPhotos() {
+            if (!db) return;
+            const transaction = db.transaction(['photos'], 'readonly');
+            const store = transaction.objectStore('photos');
+            const request = store.getAll();
+
+            request.onsuccess = function() {
+                const items = request.result || [];
+                items.forEach(item => {
+                    const img = document.getElementById(item.slotId);
+                    if (img && item.dataUrl) {
+                        img.src = item.dataUrl;
+                    }
+                });
+            };
+        }
+
+        function savePhotoToDB(slotId, dataUrl) {
+            if (!db) return;
+            const transaction = db.transaction(['photos'], 'readwrite');
+            const store = transaction.objectStore('photos');
+            store.put({ slotId: slotId, dataUrl: dataUrl });
+        }
+
+        // Trigger batch photo upload
+        function triggerBatchUpload() {
+            const batchInput = document.getElementById('batch-photo-input');
+            if (batchInput) batchInput.click();
+        }
+
+        function triggerSingleUpload(slotId) {
+            activeSingleSlotId = slotId;
+            const singleInput = document.getElementById('single-photo-input');
+            if (singleInput) singleInput.click();
+        }
+
+        function handleBatchPhotoUpload(event) {
+            const files = Array.from(event.target.files);
+            if (!files.length) return;
+
+            const slotIds = [
+                'photo-slot-1', 'photo-slot-2', 'photo-slot-3', 'photo-slot-4',
+                'photo-slot-5', 'photo-slot-6', 'photo-slot-7', 'photo-slot-8'
+            ];
+
+            // Target Filename mapping table
+            const filenameMap = {
+                'WhatsApp Image 2026-10-07 at 12.03.39 AM (2).jpeg': 'photo-slot-1',
+                'WhatsApp Image 2026-10-07 at 12.03.39 AM.jpeg': 'photo-slot-2',
+                'WhatsApp Image 2026-10-07 at 12.03.40 AM (1).jpeg': 'photo-slot-3',
+                'WhatsApp Image 2026-10-07 at 12.03.40 AM.jpeg': 'photo-slot-4',
+                'WhatsApp Image 2026-10-07 at 12.03.41 AM.jpeg': 'photo-slot-5',
+                'WhatsApp Image 2026-10-07 at 12.06.17 AM.jpeg': 'photo-slot-6',
+                'WhatsApp Image 2026-10-07 at 12.03.39 AM (1).jpeg': 'photo-slot-7',
+                'WhatsApp Image 2026-10-07 at 12.03.40 AM (2).jpeg': 'photo-slot-8'
+            };
+
+            files.forEach((file, index) => {
+                let targetSlotId = filenameMap[file.name] || slotIds[index];
+                if (targetSlotId) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const dataUrl = e.target.result;
+                        const img = document.getElementById(targetSlotId);
+                        if (img) {
+                            img.src = dataUrl;
+                            savePhotoToDB(targetSlotId, dataUrl);
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            triggerConfettiBurst();
+        }
+
+        function handleSinglePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (!file || !activeSingleSlotId) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dataUrl = e.target.result;
+                const img = document.getElementById(activeSingleSlotId);
+                if (img) {
+                    img.src = dataUrl;
+                    savePhotoToDB(activeSingleSlotId, dataUrl);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleImgError(imgEl, placeholderTitle) {
+            imgEl.onerror = null;
+            imgEl.src = 'https://placehold.co/600x800/f472b6/ffffff?text=' + encodeURIComponent(placeholderTitle);
+        }
+
+        // Floating Hearts Generator
+        function spawnHearts() {
+            const container = document.getElementById('hearts-container');
+            if (!container) return;
+            const heartCount = 16;
+            const icons = ['💖', '✨', '🌸', '⭐'];
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'bg-heart';
+                heart.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (7 + Math.random() * 7) + 's';
+                heart.style.animationDelay = (Math.random() * 5) + 's';
+                heart.style.fontSize = (14 + Math.random() * 18) + 'px';
+                container.appendChild(heart);
+            }
+        }
+
+        // Live Countdown Logic
+        function startTimer() {
+            const now = new Date();
+            let targetYear = now.getFullYear();
+            let target = new Date(targetYear, 9, 9, 0, 0, 0); // October 9th
+            if (now > target && (now.getMonth() !== 9 || now.getDate() !== 9)) {
+                target = new Date(targetYear + 1, 9, 9, 0, 0, 0);
+            }
+
+            function update() {
+                const current = new Date();
+                const diff = target - current;
+
+                const cdDays = document.getElementById('cd-days');
+                const cdHours = document.getElementById('cd-hours');
+                const cdMinutes = document.getElementById('cd-minutes');
+                const cdSeconds = document.getElementById('cd-seconds');
+
+                if (diff <= 0) {
+                    clearInterval(countdownInterval);
+                    if (cdDays) cdDays.innerText = '00';
+                    if (cdHours) cdHours.innerText = '00';
+                    if (cdMinutes) cdMinutes.innerText = '00';
+                    if (cdSeconds) cdSeconds.innerText = '00';
+                    triggerCountdownZero();
+                    return;
+                }
+
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const m = Math.floor((diff / 1000 / 60) % 60);
+                const s = Math.floor((diff / 1000) % 60);
+
+                if (cdDays) cdDays.innerText = String(d).padStart(2, '0');
+                if (cdHours) cdHours.innerText = String(h).padStart(2, '0');
+                if (cdMinutes) cdMinutes.innerText = String(m).padStart(2, '0');
+                if (cdSeconds) cdSeconds.innerText = String(s).padStart(2, '0');
+            }
+
+            update();
+            countdownInterval = setInterval(update, 1000);
+        }
+
+        // Navigation Controller
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+            });
+
+            const target = document.getElementById(pageId);
+            if (target) {
+                target.classList.remove('hidden');
+                target.classList.add('flex');
+                if (pageId === 'page9') {
+                    spawnPage9LoveParticles();
+                    triggerConfettiBurst();
+                }
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function spawnPage9LoveParticles() {
+            const container = document.getElementById('love-particles-container');
+            if (!container) return;
+            container.innerHTML = '';
+            const count = 32;
+            const items = ['💋', '💖', '💕', '💗', '❤️', '💌', '🌸', '✨'];
+            for (let i = 0; i < count; i++) {
+                const el = document.createElement('div');
+                el.className = 'bg-kiss';
+                el.innerHTML = items[Math.floor(Math.random() * items.length)];
+                el.style.left = Math.random() * 95 + '%';
+                el.style.animationDuration = (3.5 + Math.random() * 5.5) + 's';
+                el.style.animationDelay = (Math.random() * 4) + 's';
+                el.style.fontSize = (18 + Math.random() * 26) + 'px';
+                container.appendChild(el);
+            }
+        }
+
+        function triggerLoveBurst() {
+            triggerConfettiBurst();
+            spawnPage9LoveParticles();
+            playBirthdayMelody();
+        }
+
+        function triggerCountdownZero() {
+            triggerConfettiBurst();
+            playBirthdayMelody();
+            showAgeModal();
+        }
+
+        function showAgeModal() {
+            const modal = document.getElementById('age-modal');
+            if (modal) {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                modal.querySelector('div').classList.remove('scale-90');
+                modal.querySelector('div').classList.add('scale-100');
+            }
+        }
+
+        function closeAgeModal() {
+            const modal = document.getElementById('age-modal');
+            if (modal) {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                modal.querySelector('div').classList.remove('scale-100');
+                modal.querySelector('div').classList.add('scale-90');
+            }
+            navigateTo('page2');
+        }
+
+        // Fullscreen Photo Modal Viewer
+        function openPhotoModal(slotId) {
+            const modal = document.getElementById('photo-modal');
+            const targetImg = document.getElementById(slotId);
+            const modalImg = document.getElementById('modal-photo-img');
+            
+            if (modal && targetImg && modalImg) {
+                modalImg.src = targetImg.src;
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        function closePhotoModal() {
+            const modal = document.getElementById('photo-modal');
+            if (modal) {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        function toggleDream(element) {
+            const checkIcon = element.querySelector('.dream-check i');
+            const checkContainer = element.querySelector('.dream-check');
+            
+            if (checkIcon && checkIcon.classList.contains('opacity-0')) {
+                checkIcon.classList.remove('opacity-0');
+                checkContainer.classList.add('bg-pink-500', 'border-pink-500');
+                element.classList.add('bg-pink-100/60', 'line-through', 'text-slate-400');
+            } else if (checkIcon) {
+                checkIcon.classList.add('opacity-0');
+                checkContainer.classList.remove('bg-pink-500', 'border-pink-500');
+                element.classList.remove('bg-pink-100/60', 'line-through', 'text-slate-400');
+            }
+        }
+
+        function blowOutCandles() {
+            const flames = document.querySelectorAll('.flame-active');
+            flames.forEach(flame => {
+                flame.classList.add('extinguished');
+                
+                const smoke = document.createElement('div');
+                smoke.className = 'smoke-puff';
+                flame.parentElement.appendChild(smoke);
+                setTimeout(() => smoke.remove(), 2200);
+            });
+
+            const controls = document.getElementById('cake-controls');
+            if (controls) controls.classList.add('hidden');
+
+            const banner = document.getElementById('finale-banner');
+            if (banner) {
+                banner.classList.remove('hidden');
+                setTimeout(() => {
+                    banner.classList.remove('scale-90');
+                    banner.classList.add('scale-100');
+                }, 100);
+            }
+
+            triggerConfettiBurst();
+            playBirthdayMelody();
+        }
+
+        async function initMicDetection() {
+            const status = document.getElementById('mic-status');
+            const btnText = document.getElementById('mic-text');
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                if (status) status.innerText = "🎤 Listening... Blow into your mic!";
+                if (btnText) btnText.innerText = "Listening...";
+
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const analyser = ctx.createAnalyser();
+                const mic = ctx.createMediaStreamSource(stream);
+                const scriptProcessor = ctx.createScriptProcessor(2048, 1, 1);
+
+                analyser.fftSize = 1024;
+                mic.connect(analyser);
+                analyser.connect(scriptProcessor);
+                scriptProcessor.connect(ctx.destination);
+
+                scriptProcessor.onaudioprocess = function() {
+                    const data = new Uint8Array(analyser.frequencyBinCount);
+                    analyser.getByteFrequencyData(data);
+                    let sum = 0;
+                    for (let i = 0; i < data.length; i++) sum += data[i];
+                    const average = sum / data.length;
+
+                    if (average > 40) {
+                        blowOutCandles();
+                        scriptProcessor.onaudioprocess = null;
+                        stream.getTracks().forEach(track => track.stop());
+                        if (status) status.innerText = "🎉 Candles Blown Out!";
+                        if (btnText) btnText.innerText = "Use Microphone";
+                    }
+                };
+            } catch (err) {
+                if (status) status.innerText = "⚠️ Mic permission denied or not supported.";
+            }
+        }
+
+        function triggerConfettiBurst() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        function playBirthdayMelody() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const notes = [261.63, 261.63, 293.66, 261.63, 349.23, 329.63];
+                let time = ctx.currentTime;
+
+                notes.forEach((freq) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+
+                    gain.gain.setValueAtTime(0.12, time);
+                    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.35);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(time);
+                    osc.stop(time + 0.35);
+
+                    time += 0.35;
+                });
+            } catch (e) {}
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            spawnHearts();
+            startTimer();
+            initIndexedDB();
+        });
+    </script>
+</body>
+</html>
